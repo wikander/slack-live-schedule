@@ -19,7 +19,7 @@ app.use('/', express.static(__dirname + '/public'));
 //--------------
 
 let hasBeenSlacked = new Set();
-let schedule = new Schedule(scheduleJson, conf.default_timezone);
+let schedule = new Schedule(scheduleJson);
 
 const bot = controller.spawn({
   incoming_webhook: {

@@ -1,6 +1,7 @@
 'use strict';
 const moment = require('moment-timezone');
 const ValidationError = require('./validationError.js');
+const Utils = require('./utils.js');
 
 module.exports = class Event {
 
@@ -24,14 +25,14 @@ module.exports = class Event {
       throw new ValidationError('Description on Event is mandatory.');
     }
 
-    this.startTime = this.parseDate(startTime);
+    this.startTime = Utils.parseDate(startTime, this.timeZone);
 
     if (endTime) {
-      this.endTime = this.parseDate(endTime);
+      this.endTime = Utils.parseDate(endTime, this.timeZone);
     }
 
     this.remainderOffset = remainderOffset || 5;
-    this.id = this.generateId();
+    this.id = Utils.generateId();
     this.room = room;
 
     if (!this.startTime.isValid()) {
@@ -41,27 +42,12 @@ module.exports = class Event {
     }
   }
 
-  generateId() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
   get formattedStartTime() {
-    return this.formatDate(this.startTime);
+    return Utils.formatDate(this.startTime, this.timeZone);
   }
 
   get formattedEndTime() {
-    return this.formatDate(this.endTime);
-  }
-
-  formatDate(date) {
-    return date.tz(this.timeZone).format('YYYY-MM-DD HH:mm z');
-  }
-
-  parseDate(dateStr) {
-    return moment.tz(dateStr, 'YYYY-MM-DD HH:mm', this.timeZone);
+    return Utils.formatDate(this.endTime, this.timeZone);
   }
 
   shouldNotify(now, doNothingBefore) {
@@ -70,9 +56,9 @@ module.exports = class Event {
       let endInterval = this.endTime || this.startTime.clone().add(30, 'minutes');
 
       console.log("***********************************************");
-      console.log("now", this.formatDate(now));
-      console.log("start", this.formatDate(startInterval));
-      console.log("end", this.formatDate(endInterval));
+      console.log("now", Utils.formatDate(now, this.timeZone));
+      console.log("start", Utils.formatDate(startInterval, this.timeZone));
+      console.log("end", Utils.formatDate(endInterval, this.timeZone));
       console.log("***********************************************");
       return now.isBetween(startInterval, endInterval) && doNothingBefore.isBefore(this.startTime);
     } else {
