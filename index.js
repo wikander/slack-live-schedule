@@ -1,15 +1,25 @@
 'use strict';
 const Botkit = require('botkit');
 const Schedule = require('./schedule.js');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const scheduleJson = require('./schedule.json');
 const conf = require('./conf.json');
-var controller = Botkit.slackbot();
+const controller = Botkit.slackbot();
 const appStartedAt = moment();
+const express = require('express');
+const app = express();
 
 console.log('App started with conf:', JSON.stringify(conf, null, 2));
+
+
+//--------------
+app.listen(process.env.PORT || 3000);
+app.use('/', express.static(__dirname + '/public'));
+//--------------
+
 let hasBeenSlacked = new Set();
-let schedule = new Schedule(scheduleJson);
+let schedule = new Schedule(scheduleJson, conf.default_timezone);
+
 const bot = controller.spawn({
   incoming_webhook: {
     url: conf.incoming_webhook_url
@@ -64,6 +74,7 @@ function sendToSlack(events) {
   for (let event of events) {
     let attachment = buildAttachments([event]);
     bot.sendWebhook({
+      text: 'New Events are starting in '  + event.remainderOffset + " minutes.",
       attachments: attachment
     }, function(err, res) {
       if (err) {

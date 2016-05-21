@@ -1,5 +1,5 @@
 'use strict';
-const moment = require('moment');
+const moment = require('moment-timezone');
 const ValidationError = require('./validationError.js');
 
 module.exports = class Event {
@@ -11,8 +11,10 @@ module.exports = class Event {
         startTime,
         endTime,
         remainderOffset,
-        room
-    }) {
+        room,
+        timeZone
+    }, defaultTimezone) {
+        this.timeZone = timeZone || defaultTimezone;
         this.title = title;
         this.speaker = speaker;
 
@@ -55,11 +57,11 @@ module.exports = class Event {
     }
 
     formatDate(date) {
-        return date.format('YYYY-MM-DD HH:mm');
+        return date.tz(this.timeZone).format('YYYY-MM-DD HH:mm z');
     }
 
     parseDate(dateStr) {
-        return moment(dateStr, 'YYYY-MM-DD HH:mm');
+        return moment.tz(dateStr, 'YYYY-MM-DD HH:mm', this.timeZone);
     }
 
     shouldNotify(now, doNothingBefore) {
@@ -67,6 +69,11 @@ module.exports = class Event {
             let startInterval = this.startTime.clone().subtract(this.remainderOffset, 'minutes');
             let endInterval = this.endTime || this.startTime.clone().add(30, 'minutes');
 
+            console.log("***********************************************");
+            console.log("now", this.formatDate(now));
+            console.log("start", this.formatDate(startInterval));
+            console.log("end", this.formatDate(endInterval));
+            console.log("***********************************************");
             return now.isBetween(startInterval, endInterval)
                 && doNothingBefore.isBefore(this.startTime);
         } else {
