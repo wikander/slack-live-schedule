@@ -1,0 +1,11 @@
+[
+  {
+    "title": "(optional) The title",
+    "speaker": "(optional) Simon Wikander",
+    "description": "(mandatory) Consectetur reprehenderit elit laborum aliquip dolore duis eiusmod cupidatat ad et voluptate nulla cillum.",
+    "room": "(optional) City ​​Hall",
+    "startTime": "2016-05-21 12:00",
+    "endTime": "2016-05-21 14:00",
+    "remainderOffset": 15
+  }
+]

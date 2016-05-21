@@ -1,0 +1,26 @@
+{
+  "name": "slack-live-schedule",
+  "version": "1.0.0",
+  "description": "Sends events contained in  schedule.json to an Slack incoming webhook integration.",
+  "main": "index.js",
+  "dependencies": {
+    "botkit": "^0.1.1",
+    "moment": "^2.13.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wikander/slack-live-schedule.git"
+  },
+  "keywords": [
+    "Slack",
+    "Node"
+  ],
+  "author": "Simon Wikander",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wikander/slack-live-schedule/issues"
+  },
+  "homepage": "https://github.com/wikander/slack-live-schedule#readme",
+  "private": true
+}

@@ -1,0 +1,4 @@
+{
+  "incoming_webhook_url": "https://hooks.slack.com/services/{copy_your_stuff_here}",
+  "poll_interval": 20
+}
