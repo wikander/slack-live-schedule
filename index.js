@@ -1,6 +1,7 @@
 'use strict';
 const Botkit = require('botkit');
 const Schedule = require('./schedule.js');
+const Event = require('./event.js');
 const moment = require('moment-timezone');
 const scheduleJson = require('./schedule.json');
 const conf = require('./conf.json');
@@ -71,10 +72,19 @@ function toNofity(events) {
 }
 
 function sendToSlack(events) {
+  events = events.sort(Event.compare);
+  let startTime = moment();
   for (let event of events) {
     let attachment = buildAttachments([event]);
+
+    let text = '';
+    if (!event.startTime.isSame(startTime)) {
+      startTime = event.startTime;
+      text = 'Event(s) starting in '  + event.remainderOffset + " minutes:";
+    }
+
     bot.sendWebhook({
-      text: 'New Events are starting in '  + event.remainderOffset + " minutes.",
+      text: text,
       attachments: attachment
     }, function(err, res) {
       if (err) {
